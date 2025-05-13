@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Disease Prediction System</title>
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: rgba(33,33,33,1);
+            color: white;
+        }
+
+        .help-section, .title-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 2.25rem;
+        }
+        .text-area-container {
+            /*display: flex;
+            justify-content: center;*/
+            margin-bottom: 20px;
+            width: 800px;
+        }
+        .text-area-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+        .text-area-container .error_container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+        textarea {
+            width: 80%;
+            height: 100px;
+            font-size: 14px;
+            line-height: 1.5rem;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background-color: #2f2f2f;
+            resize: none;
+            color: rgb(155, 155, 155, 1);
+        }
+        textarea:hover, textarea:focus{
+            outline: none;
+        }
+        .text-area-container button {
+            padding: .5rem .75rem;
+            font-size: 14px;
+            border: 1px solid #2f2f2f;
+            background-color: transparent;
+            color: rgb(155, 155, 155, 1);
+            border-radius: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .text-area-container button:hover {
+            background-color: #2f2f2f;
+            color: #ececec;
+        }
+        .error{
+            font-size: 0.9rem;
+            color: #ff4d4d;
+            display: none;
+        }
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            list-style-type: none;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 20px;
+        }
+        .suggestion-pill {
+            padding: .5rem .75rem;
+            font-size: 14px;
+            border: 1px solid #2f2f2f;
+            background-color: transparent;
+            color: rgb(155, 155, 155, 1);
+            border-radius: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .suggestion-pill:hover {
+            background-color: #2f2f2f;
+            color: #ececec;
+        }
+        p{
+            font-size: 0.9rem;
+            color: #888888;
+        }
+        .footer-container {
+            /*position: absolute;
+            bottom: 0;
+            left: 0;*/
+            width: 100%;
+            text-align: center;
+        }
+        .footer-container .footer-text {
+            margin: 5px 0; /* Add spacing between footer texts */
+            font-size: 0.9rem;
+        }
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(33,33,33,1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            display: none;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            animation: fadeIn 0.6s ease-in-out;
+            overflow: visible;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            /*margin-bottom: 1rem;*/
+        }
+        .modal-line {
+            width: 50%;
+            height: 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #555;
+           /* margin: 0.5rem 0;*/
+        }
+        .modal-body {
+            font-size: 1rem;
+            text-align: left;
+            width: 100%;
+            line-height: 1.6;
+        }
+        .modal-body ul{
+            margin-left: 20px;
+            font-size: 0.9rem;
+            color: #888888;
+        }
+        .modal-body p {
+            position: static;
+        }
+        .modal-body .space{
+            margin-bottom: 5px;
+        }
+        .modal-footer button {
+            padding: .5rem .75rem;
+            font-size: 14px;
+            border: 1px solid #2f2f2f;
+            background-color: transparent;
+            color: rgb(155, 155, 155, 1);
+            border-radius: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .modal-footer button:hover {
+            background-color: #2f2f2f;
+            color: #ececec;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -55%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        .spin {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid #2f2f2f;
+            border-top: 3px solid rgb(155, 155, 155, 1);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (min-height: 800px) {
+            .footer-container {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title-section">
+        <h1>INTELLIGENT DECISION SUPPORT SYSTEM FOR MULTIPLE DISEASE PREDICTION</h1>
+    </div>
+    <div class="help-section">
+        <h1>Welcome, please tell us how you feel</h1>
+    </div>
+    <div class="text-area-container">
+        <div class="error_container">
+            <p id="errorPlaceholder" class="error"></p>
+        </div>
+        <form id="form" method="post">
+            {% csrf_token %}
+            <textarea id="symptoms" name="symptoms" placeholder="Type your symptoms here. Separate each with a comma (,) or select from the suggestions below."></textarea>
+            <button id="submitButton" type="submit">Submit</button>
+        </form>
+        <ul class="suggestions">
+            {% for symptom in symptoms %}
+            <li class="suggestion-pill">{{ symptom }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="footer-container">
+        <p class='footer-text'><b>Important:</b> This system is not intended to diagnose real health issues. For a thorough analysis, please consult a doctor. It is for educational purposes only. &copy; 2024</p>
+    </div>
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div id="modalHeader" class="modal-header">Disease Diagnostics</div>
+        <div class="modal-line"></div>
+        <div id="modalBody" class="modal-body"></div>
+        <div class="modal-line"></div>
+        <div class="modal-footer">
+            <button id="closeModal">Close</button>
+        </div>
+    </div>
+</body>
+<script>
+    const form = document.getElementById("form");
+    const textArea = document.getElementById("symptoms");
+    const submitButton = document.getElementById("submitButton");
+    const errorPlaceholder = document.getElementById("errorPlaceholder");
+
+    const modal = document.getElementById("modal");
+    const modalBody = document.getElementById("modalBody");
+    const closeModal = document.getElementById("closeModal");
+
+    const token = getCookie('csrftoken');
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+        const symptom = textArea.value.trim();
+        const name = textArea.getAttribute("name");
+
+        if (symptom && checkText(symptom)){
+            formData.append(name, symptom);
+        }
+        if (Array.from(formData).length === 0){
+            displayError("Enter at least 3 symptoms")
+        }else{
+            beforeSend();
+            fetch("{% url 'diagnose' %}", {
+                method: "post",
+                credentials: 'same-origin',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': token,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data){
+                    if (data.hasOwnProperty('Error')) {
+                        displayError(data['Error']);
+                    }else{
+                        if (data.hasOwnProperty('Success') && data['Success'] === true){
+                            const disease = data['Disease'];
+                            const description = data['Description'];
+                            const precautions = data['Precautions'];
+
+                            const disease_info = `<p class="space"><strong>Disease: </strong>${disease}</p>`;
+                            const description_info = `<p class="space"><strong>Description: </strong>${description}</p>`;
+                            let precautions_info = `<p><strong>Precaution: </strong></p>`;
+                            precautions_info += `<ul>`;
+                            precautions.forEach((value) => {
+                                precautions_info += `<li>${value}.</li>`;
+                            });
+                            precautions_info += '</ul>';
+
+                            // update modal body
+                            modalBody.innerHTML = disease_info + description_info + precautions_info;
+                        }
+                        modal.style.display = "flex";
+                    }
+                }
+                resetButton();
+            })
+            .catch(error => {
+                displayError(error);
+                resetButton();
+            })
+        }
+    });
+
+    const listItems = document.querySelectorAll(".suggestion-pill");
+    listItems.forEach(item => {
+        item.addEventListener("click", function () {
+            let textAreaValue = textArea.value.trim();
+            let listContent = this.textContent;
+            if (textAreaValue === ""){
+                textArea.value = listContent;
+            }else{
+                if (textAreaValue.charAt(textAreaValue.length - 1) === ","){
+                    textArea.value = textAreaValue + " " + listContent
+                }else{
+                    textArea.value = textAreaValue + ", " + listContent
+                }
+            }
+        });
+     });
+
+    closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    function checkText(text) {
+        const list = text.split(',');
+        const trimmedList = list.map(item => item.trim());
+        return trimmedList.length >= 3;
+    }
+    function beforeSend(){
+        errorPlaceholder.innerHTML = "";
+        errorPlaceholder.style.display = 'none';
+        submitButton.innerHTML = '<span class="spin"></span> diagnosing...';
+        textArea.disabled = true;
+        submitButton.disabled = true;
+        modalBody.innerHTML = "";
+    }
+    function displayError(error){
+        errorPlaceholder.innerHTML = error;
+        errorPlaceholder.style.display = 'block';
+    }
+    function resetButton(){
+        textArea.disabled = false;
+        submitButton.innerHTML = 'Submit'; // Reset button content
+        submitButton.disabled = false;
+        form.reset();
+    }
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+</html>
