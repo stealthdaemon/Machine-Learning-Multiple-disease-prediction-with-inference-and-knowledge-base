@@ -1,6 +1,13 @@
 # Intelligent Clinical Decision Support/Expert System: Leveraging Symptom Analysis for Accurate Disease Prediction - with Inference and Knowledge Base
 
-The system will allow users to input symptoms and suggest possible medical conditions along with general advice.
+The system allows users to enter their symptoms.
+
+![Simple user interface](/data/picture.png "Interface")
+
+It provides possible medical conditions along with general advice.
+
+![Possible medical conditions with advice](/data/picture2.png "Condition and advice")
+
 
 ## To run application
 
